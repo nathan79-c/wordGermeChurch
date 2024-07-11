@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">wordGermeChurch</string>
+    <string name="home_button">Home</string>
+    <string name="favorites_button">Favorites</string>
+    <string name="create_button">Create</string>
+    <string name="punch_button">All Verset</string>
+    <string name="back_button">Back</string>
+    <string name="no_item_description">Oops!\nNo Verset in the Favorite.</string>
+</resources>
