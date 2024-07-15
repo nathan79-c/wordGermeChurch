@@ -5,36 +5,31 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.LocalTextStyle
+/* noinspection UsingMaterialAndMaterial3Libraries */
+import androidx.compose.material.OutlinedTextField
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.Text
 import androidx.compose.material3.Button
-import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.wordgermechurch.ui.AppViewModelProvider
-import kotlinx.coroutines.launch
-
 
 @Composable
 fun SimpleOutlinedTextFieldSample(
-    viewmodel: InsertViewmodel = viewModel(factory = AppViewModelProvider.Factory),
-    navigateHome: () -> Unit
+    itemUiState: ItemUiState,
+    onDescriptionChange: (String) -> Unit,
+    onContentChange: (String) -> Unit,
+    onSaveClick: () -> Unit
 ) {
-    val coroutineScope = rememberCoroutineScope()
-    val itemUiState by viewmodel.itemUiState.collectAsState()
-
     Column(modifier = Modifier.padding(16.dp)) {
         OutlinedTextField(
             value = itemUiState.itemDetails.description,
-            onValueChange = { viewmodel.updateUiState(itemUiState.itemDetails.copy(description = it)) },
+            onValueChange = onDescriptionChange,
             label = { Text("Reference Biblique") },
             modifier = Modifier
                 .fillMaxWidth()
@@ -43,7 +38,7 @@ fun SimpleOutlinedTextFieldSample(
         )
         OutlinedTextField(
             value = itemUiState.itemDetails.content,
-            onValueChange = { viewmodel.updateUiState(itemUiState.itemDetails.copy(content = it)) },
+            onValueChange = onContentChange,
             label = { Text("Contenu du Verset") },
             modifier = Modifier
                 .fillMaxWidth()
@@ -52,12 +47,7 @@ fun SimpleOutlinedTextFieldSample(
         )
         Spacer(modifier = Modifier.height(8.dp))
         Button(
-            onClick = {
-                coroutineScope.launch {
-                    viewmodel.saveItem()
-                    navigateHome()
-                }
-            },
+            onClick = onSaveClick,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
             Text(text = "Save")
@@ -65,11 +55,15 @@ fun SimpleOutlinedTextFieldSample(
     }
 }
 
-
-
-
 @Preview(showBackground = true)
 @Composable
-fun PreviewEdit(){
- //  SimpleOutlinedTextFieldSample()
+fun SimpleOutlinedTextFieldSamplePreview() {
+    SimpleOutlinedTextFieldSample(
+        itemUiState = ItemUiState(itemDetails = ItemDetails(description = "Example Description", content = "Example Content")),
+        onDescriptionChange = {},
+        onContentChange = {},
+        onSaveClick = {}
+    )
 }
+
+

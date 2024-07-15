@@ -42,12 +42,14 @@ import com.example.wordgermechurch.data.Item
 fun HomeScreen(
     onUpdateScreen: () -> Unit,
     uiState: HomeUistate,
-    onLikeClicked: (Item) -> Unit // Ajout de cette ligne
+    onLikeClicked: (Item) -> Unit ,
+    navigateToItemModfiy: () -> Unit// Ajout de cette ligne
 ) {
     CardItems(
         onClick = { onUpdateScreen() },
         uiState = uiState,
-        onLikeClicked = onLikeClicked // Ajout de cette ligne
+        onLikeClicked = onLikeClicked ,
+        navigateToItemModfiy = navigateToItemModfiy , // Ajout de cette ligne
     )
 }
 
@@ -56,6 +58,7 @@ fun CardItems(
     onClick: () -> Unit,
     uiState: HomeUistate,
     onLikeClicked: (Item) -> Unit,
+    navigateToItemModfiy: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val image: Painter = painterResource(id = uiState.currentImage)

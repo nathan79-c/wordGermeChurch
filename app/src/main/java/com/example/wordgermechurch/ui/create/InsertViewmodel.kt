@@ -32,6 +32,9 @@ class InsertViewmodel(private val itemsRepository: ItemsRepository) : ViewModel(
             }
         }
     }
+    fun loadItem(itemId: String) {
+        // Load item by itemId implementation
+    }
 }
 
 data class ItemUiState(

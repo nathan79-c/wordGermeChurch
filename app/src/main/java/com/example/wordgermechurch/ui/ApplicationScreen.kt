@@ -1,17 +1,16 @@
 package com.example.wordgermechurch.ui
 
 
+//noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
 import android.annotation.SuppressLint
 import androidx.annotation.StringRes
-
 import androidx.compose.foundation.layout.padding
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.BottomNavigation
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MoreVert
@@ -25,7 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import com.example.wordgermechurch.R
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -38,7 +36,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.wordgermechurch.ui.create.ItemEditScreen
+import com.example.wordgermechurch.R
 import com.example.wordgermechurch.ui.create.SimpleOutlinedTextFieldSample
 import com.example.wordgermechurch.ui.home.HomeScreen
 import com.example.wordgermechurch.ui.home.HommeViewModel
@@ -74,7 +72,7 @@ fun ApplicationAppBar(
             if (canNavigateBack) {
                 IconButton(onClick = navigateUp) {
                     Icon(
-                        imageVector = Icons.Filled.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(R.string.back_button)
                     )
                 }
@@ -146,7 +144,8 @@ fun ApplicationScreen(
                     HomeScreen(
                         onUpdateScreen = { viewModel.getItem() },
                         uiState = uiState,
-                        onLikeClicked = { item -> viewModel.incrementLiked(item) }
+                        onLikeClicked = { item -> viewModel.incrementLiked(item) },
+                        navigateToItemModfiy={}
                     )
                 }
                 composable(ApplicationScreen.Create.name) {
@@ -162,16 +161,14 @@ fun ApplicationScreen(
                 }
                 composable("itemEdit/{itemId}") { backStackEntry ->
                     val itemId = backStackEntry.arguments?.getString("itemId") ?: return@composable
-                    ItemEditScreen(
-                        itemId = itemId,
-                        navigateBack = { navController.navigateUp() }
-                    )
+
                 }
             }
 
 
         }
 }
+
 
 @Preview
 @Composable
