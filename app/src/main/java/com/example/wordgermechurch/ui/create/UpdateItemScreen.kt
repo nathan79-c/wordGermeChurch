@@ -12,13 +12,17 @@ import androidx.compose.material.OutlinedTextField
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Text
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.wordgermechurch.R
+import com.example.wordgermechurch.ui.AppViewModelProvider
+import com.example.wordgermechurch.ui.navigation.NavigationDestination
 
 
 object ItemEditDestination : NavigationDestination {
@@ -28,7 +32,16 @@ object ItemEditDestination : NavigationDestination {
     val routeWithArgs = "$route/{$itemIdArg}"
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ItemEditScreen(
+    navigateBack: () -> Unit,
+    onNavigateUp: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: UpdateViewModel = viewModel(factory = AppViewModelProvider.Factory)
+){
 
+}
 @Composable
 fun SimpleOutlinedTextFieldSample(
     itemUiState: ItemUiState,
@@ -60,7 +73,7 @@ fun SimpleOutlinedTextFieldSample(
             onClick = onSaveClick,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
-            Text(text = "Save")
+            Text(text = "Modifier")
         }
     }
 }

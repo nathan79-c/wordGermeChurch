@@ -34,11 +34,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.wordgermechurch.R
+import com.example.wordgermechurch.ui.create.ItemEditDestination
+import com.example.wordgermechurch.ui.create.ItemEditScreen
 import com.example.wordgermechurch.ui.create.SimpleOutlinedTextFieldSample
 import com.example.wordgermechurch.ui.home.HomeScreen
 import com.example.wordgermechurch.ui.home.HommeViewModel
@@ -161,10 +165,18 @@ fun ApplicationScreen(
                 composable(ApplicationScreen.All.name) {
                     ListCard() /* Contenu de l'écran Punch */
                 }
-                composable("itemEdit/{itemId}") { backStackEntry ->
-                    val itemId = backStackEntry.arguments?.getString("itemId") ?: return@composable
-
+                composable(
+                    route = ItemEditDestination.routeWithArgs,
+                    arguments = listOf(navArgument(ItemEditDestination.itemIdArg) {
+                        type = NavType.IntType
+                    })
+                ) {
+                    ItemEditScreen(
+                        navigateBack = { navController.popBackStack() },
+                        onNavigateUp = { navController.navigateUp() }
+                    )
                 }
+
             }
 
 

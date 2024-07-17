@@ -1,12 +1,13 @@
 package com.example.wordgermechurch.ui
 
-import android.text.Editable.Factory
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.wordgermechurch.VersetApplication
 import com.example.wordgermechurch.ui.create.InsertViewmodel
+import com.example.wordgermechurch.ui.create.UpdateViewModel
 import com.example.wordgermechurch.ui.home.HommeViewModel
 import com.example.wordgermechurch.ui.listng.ListViewModel
 
@@ -22,6 +23,12 @@ object AppViewModelProvider {
         }
         initializer {
             ListViewModel(VersetApplication().container.itemsRepository)
+        }
+        initializer {
+            UpdateViewModel(
+                this.createSavedStateHandle(),
+            VersetApplication().container.itemsRepository
+            )
         }
 
     }
