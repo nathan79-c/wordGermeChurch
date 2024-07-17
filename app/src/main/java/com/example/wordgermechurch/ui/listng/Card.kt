@@ -35,13 +35,18 @@ import kotlinx.coroutines.launch
 @Composable
 fun ListCard(
     modifier: Modifier = Modifier,
-    viewModel: ListViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: ListViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    navigateToItemModify: (Int) -> Unit
+
 ) {
     val itemListState by viewModel.listUiState.collectAsState()
     val itemList = itemListState.itemList // Extract the list of items
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         items(itemList) { item ->
-            ItemCard(modifier,item = item, viewModel = viewModel)
+            ItemCard(
+                modifier,item = item, viewModel = viewModel,
+                navigateToItemModify = navigateToItemModify
+            )
         }
     }
 }
@@ -50,7 +55,8 @@ fun ListCard(
 fun ItemCard(
     modifier: Modifier ,
     item: Item,
-    viewModel: ListViewModel
+    viewModel: ListViewModel,
+    navigateToItemModify: (Int) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -91,7 +97,7 @@ fun ItemCard(
                     .padding(16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                IconButton(onClick = { /* Implement edit functionality here */ }) {
+                IconButton(onClick = { navigateToItemModify(item.id ?: 0) }) {
                     Icon(imageVector = Icons.Default.Edit, contentDescription = "Modifier")
                 }
                 IconButton(onClick = {

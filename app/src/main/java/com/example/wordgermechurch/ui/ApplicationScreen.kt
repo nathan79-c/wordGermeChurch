@@ -3,7 +3,8 @@ package com.example.wordgermechurch.ui
 
 //noinspection UsingMaterialAndMaterial3Libraries
 //noinspection UsingMaterialAndMaterial3Libraries
-import android.annotation.SuppressLint
+//noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 //noinspection UsingMaterialAndMaterial3Libraries
@@ -61,16 +62,17 @@ enum class ApplicationScreen(@StringRes val title: Int, val icon: ImageVector) {
 
 
 
+
 // TODO: AppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ApplicationAppBar(
     @StringRes currentScreenTitle: Int,
-    canNavigateBack :Boolean,
-    navigateUp:()->Unit,
+    canNavigateBack: Boolean,
+    navigateUp: () -> Unit,
     modifier: Modifier = Modifier
-){
+) {
     CenterAlignedTopAppBar(
         title = { Text(stringResource(currentScreenTitle)) },
         modifier = modifier,
@@ -92,14 +94,14 @@ fun BottomNavigationBar(navController: NavHostController) {
     BottomNavigation(
         backgroundColor = Color.White,
         contentColor = Color.Black,
-        modifier =Modifier.padding(bottom = 56.dp)
+        modifier = Modifier.padding(bottom = 56.dp)
     ) {
         val coroutineScope = rememberCoroutineScope()
-        ApplicationScreen.entries.forEach { screen ->
+        ApplicationScreen.values().forEach { screen ->
             BottomNavigationItem(
                 icon = { Icon(screen.icon, contentDescription = stringResource(id = screen.title)) },
                 label = { Text(text = stringResource(id = screen.title)) },
-                selected = false, // Gérer la sélection de l'élément actif
+                selected = false,
                 onClick = {
                     coroutineScope.launch {
                         navController.navigate(screen.name) {
@@ -116,72 +118,77 @@ fun BottomNavigationBar(navController: NavHostController) {
     }
 }
 
-@SuppressLint("SuspiciousIndentation")
+
 @Composable
 fun ApplicationScreen(
     navController: NavHostController = rememberNavController()
-){
-
-
+) {
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentScreen = ApplicationScreen.valueOf(
-            backStackEntry?.destination?.route ?:ApplicationScreen.Favorites.name
-    )
+    val currentScreen = backStackEntry?.destination?.route?.let { route ->
+        ApplicationScreen.values().find { it.name == route }
+    }
 
-        Scaffold(
-                topBar = {
-                    ApplicationAppBar(
-                        currentScreenTitle = currentScreen.title,
-                        canNavigateBack = navController.previousBackStackEntry !=null,
-                        navigateUp = {  navController.navigateUp()}
-
-                    )
-                },
-            bottomBar = { BottomNavigationBar(navController) }
-        ) {innerPadding ->
-            NavHost(
-                navController = navController,
-                startDestination = ApplicationScreen.Home.name,
-                modifier = Modifier.padding(innerPadding)
-            ) {
-                composable(ApplicationScreen.Home.name) {
-                    val viewModel: HommeViewModel = viewModel(factory = AppViewModelProvider.Factory)
-                    val uiState by viewModel.uiState.collectAsState()
-                    HomeScreen(
-                        onUpdateScreen = { viewModel.getItem() },
-                        uiState = uiState,
-                        onLikeClicked = { item -> viewModel.incrementLiked(item) },
-                        navigateToItemModfiy={}
-                    )
-                }
-                composable(ApplicationScreen.Create.name) {
-                    SimpleOutlinedTextFieldSample(
-                        navigateHome = { navController.navigate(ApplicationScreen.Home.name) }
-                    )/* Contenu de l'écran Create */
-                }
-                composable(ApplicationScreen.Favorites.name) {
-                    FavoriteScreen() /* Contenu de l'écran Favorites */
-                }
-                composable(ApplicationScreen.All.name) {
-                    ListCard() /* Contenu de l'écran Punch */
-                }
-                composable(
-                    route = ItemEditDestination.routeWithArgs,
-                    arguments = listOf(navArgument(ItemEditDestination.itemIdArg) {
-                        type = NavType.IntType
-                    })
-                ) {
-                    ItemEditScreen(
-                        navigateBack = { navController.popBackStack() },
-                        onNavigateUp = { navController.navigateUp() }
-                    )
-                }
-
+    Scaffold(
+        topBar = {
+            ApplicationAppBar(
+                currentScreenTitle = currentScreen?.title ?: R.string.default_screen_title, // Provide a default title if the route is not part of the enum
+                canNavigateBack = navController.previousBackStackEntry != null,
+                navigateUp = { navController.navigateUp() }
+            )
+        },
+        bottomBar = { BottomNavigationBar(navController) }
+    ) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = ApplicationScreen.Home.name,
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            composable(ApplicationScreen.Home.name) {
+                val viewModel: HommeViewModel = viewModel(factory = AppViewModelProvider.Factory)
+                val uiState by viewModel.uiState.collectAsState()
+                HomeScreen(
+                    onUpdateScreen = { viewModel.getItem() },
+                    uiState = uiState,
+                    onLikeClicked = { item -> viewModel.incrementLiked(item) },
+                    navigateToItemModify = { itemId ->
+                        navController.navigate("${ItemEditDestination.route}/$itemId")
+                    }
+                )
             }
-
-
+            composable(ApplicationScreen.Create.name) {
+                SimpleOutlinedTextFieldSample(
+                    navigateHome = { navController.navigate(ApplicationScreen.Home.name) }
+                )
+            }
+            composable(ApplicationScreen.Favorites.name) {
+                FavoriteScreen()
+            }
+            composable(ApplicationScreen.All.name) {
+                ListCard(
+                    navigateToItemModify = { itemId ->
+                        navController.navigate("${ItemEditDestination.route}/$itemId")
+                    }
+                )
+            }
+            composable(
+                route = ItemEditDestination.routeWithArgs,
+                arguments = listOf(navArgument(ItemEditDestination.itemIdArg) {
+                    type = NavType.IntType
+                })
+            ) { backStackEntry ->
+                val itemId = backStackEntry.arguments?.getInt(ItemEditDestination.itemIdArg)
+                ItemEditScreen(
+                    itemId = itemId ?: 0,
+                    navigateBack = { navController.popBackStack() }
+                )
+            }
         }
+    }
 }
+
+
+
+
 
 
 @Preview

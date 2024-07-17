@@ -7,4 +7,6 @@
     <string name="back_button">Back</string>
     <string name="no_item_description">Oops!\nNo Verset in the Favorite.</string>
     <string name="edit_item_title">Edit Item</string>
+    <string name="default_screen_title">Edit Item</string>
+
 </resources>

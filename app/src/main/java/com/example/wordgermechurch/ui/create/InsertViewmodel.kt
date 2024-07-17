@@ -32,9 +32,7 @@ class InsertViewmodel(private val itemsRepository: ItemsRepository) : ViewModel(
             }
         }
     }
-    fun loadItem(itemId: String) {
-        // Load item by itemId implementation
-    }
+
 }
 
 data class ItemUiState(
@@ -43,11 +41,13 @@ data class ItemUiState(
 )
 
 data class ItemDetails(
+    val id: Int = 0,
     val description: String = "",
     val content: String = ""
 )
 
 fun ItemDetails.toItem(): Item = Item(
+    id = id,
     description = description,
     content = content
 )
@@ -58,6 +58,7 @@ fun Item.toItemUiState(isEntryValid: Boolean = false): ItemUiState = ItemUiState
 )
 
 fun Item.toItemDetails(): ItemDetails = ItemDetails(
+    id = id,
     description = description,
     content = content
 )

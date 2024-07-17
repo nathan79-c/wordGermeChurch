@@ -14,16 +14,14 @@ import kotlinx.coroutines.launch
 class UpdateViewModel(
     savedStateHandle: SavedStateHandle,
     private val itemsRepository: ItemsRepository
-) : ViewModel(){
-    /**
-     * Holds current item ui state
-     */
+) : ViewModel() {
+
     var itemUiState by mutableStateOf(ItemUiState())
         private set
 
     private val itemId: Int = checkNotNull(savedStateHandle[ItemEditDestination.itemIdArg])
 
-    init {
+    fun loadItem(itemId: Int ) {
         viewModelScope.launch {
             itemUiState = itemsRepository.getItemfindStream(itemId)
                 .filterNotNull()
@@ -31,26 +29,20 @@ class UpdateViewModel(
                 .toItemUiState(true)
         }
     }
-    /**
-     * Update the item in the [ItemsRepository]'s data source
-     */
-    suspend fun updateItem() {
-        if (validateInput(itemUiState.itemDetails)) {
-            itemsRepository.updateItem(itemUiState.itemDetails.toItem())
+
+    suspend fun updateItem(description: String, content: String) {
+        val updatedItemDetails = itemUiState.itemDetails.copy(description = description, content = content)
+        if (validateInput(updatedItemDetails)) {
+            itemsRepository.updateItem(updatedItemDetails.toItem())
+            itemUiState = itemUiState.copy(itemDetails = updatedItemDetails)
         }
     }
-    /**
-     * Updates the [itemUiState] with the value provided in the argument. This method also triggers
-     * a validation for input values.
-     */
-    fun updateUiState(itemDetails: ItemDetails) {
-        itemUiState =
-            ItemUiState(itemDetails = itemDetails, isEntryValid = validateInput(itemDetails))
-    }
 
-    private fun validateInput(uiState: ItemDetails = itemUiState.itemDetails): Boolean {
+    private fun validateInput(uiState: ItemDetails): Boolean {
         return with(uiState) {
             content.isNotBlank() && description.isNotBlank()
         }
     }
 }
+
+

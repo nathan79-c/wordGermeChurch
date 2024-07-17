@@ -42,14 +42,14 @@ import com.example.wordgermechurch.data.Item
 fun HomeScreen(
     onUpdateScreen: () -> Unit,
     uiState: HomeUistate,
-    onLikeClicked: (Item) -> Unit ,
-    navigateToItemModfiy: () -> Unit// Ajout de cette ligne
+    onLikeClicked: (Item) -> Unit,
+    navigateToItemModify: (Int) -> Unit
 ) {
     CardItems(
         onClick = { onUpdateScreen() },
         uiState = uiState,
-        onLikeClicked = onLikeClicked ,
-        navigateToItemModfiy = navigateToItemModfiy , // Ajout de cette ligne
+        onLikeClicked = onLikeClicked,
+        navigateToItemModify = navigateToItemModify
     )
 }
 
@@ -58,7 +58,7 @@ fun CardItems(
     onClick: () -> Unit,
     uiState: HomeUistate,
     onLikeClicked: (Item) -> Unit,
-    navigateToItemModfiy: () -> Unit,
+    navigateToItemModify: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val image: Painter = painterResource(id = uiState.currentImage)
@@ -160,10 +160,9 @@ fun CardItems(
             }
         }
 
-
         // Floating Action Button
         FloatingActionButton(
-            onClick = { /* Action à définir */ },
+            onClick = { navigateToItemModify(uiState.currentVerset?.id ?: 0) },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),
@@ -173,6 +172,7 @@ fun CardItems(
         }
     }
 }
+
 
 
 

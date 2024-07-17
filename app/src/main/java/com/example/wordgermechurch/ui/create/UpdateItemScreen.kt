@@ -1,5 +1,11 @@
 package com.example.wordgermechurch.ui.create
 
+//noinspection UsingMaterialAndMaterial3Libraries
+/* noinspection UsingMaterialAndMaterial3Libraries */
+//noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -7,13 +13,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.LocalTextStyle
-/* noinspection UsingMaterialAndMaterial3Libraries */
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.OutlinedTextField
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Text
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,6 +34,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.wordgermechurch.R
 import com.example.wordgermechurch.ui.AppViewModelProvider
 import com.example.wordgermechurch.ui.navigation.NavigationDestination
+import kotlinx.coroutines.launch
 
 
 object ItemEditDestination : NavigationDestination {
@@ -32,26 +44,54 @@ object ItemEditDestination : NavigationDestination {
     val routeWithArgs = "$route/{$itemIdArg}"
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ItemEditScreen(
+    itemId: Int,
     navigateBack: () -> Unit,
-    onNavigateUp: () -> Unit,
-    modifier: Modifier = Modifier,
     viewModel: UpdateViewModel = viewModel(factory = AppViewModelProvider.Factory)
-){
+) {
+    val coroutineScope = rememberCoroutineScope()
+    var description by remember { mutableStateOf("") }
+    var content by remember { mutableStateOf("") }
 
+    LaunchedEffect(itemId) {
+        viewModel.loadItem(itemId)
+    }
+
+    val itemUiState = viewModel.itemUiState
+
+    LaunchedEffect(itemUiState) {
+        description = itemUiState.itemDetails.description
+        content = itemUiState.itemDetails.content
+    }
+
+    SimpleOutlinedTextFieldSample(
+        description = description,
+        content = content,
+        onDescriptionChange = { description = it },
+        onContentChange = { content = it },
+        onSaveClick = {
+            coroutineScope.launch {
+                viewModel.updateItem(description, content)
+                navigateBack()
+            }
+        }
+    )
 }
+
+
 @Composable
 fun SimpleOutlinedTextFieldSample(
-    itemUiState: ItemUiState,
+    description: String,
+    content: String,
     onDescriptionChange: (String) -> Unit,
     onContentChange: (String) -> Unit,
-    onSaveClick: () -> Unit
+    onSaveClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = modifier.padding(16.dp)) {
         OutlinedTextField(
-            value = itemUiState.itemDetails.description,
+            value = description,
             onValueChange = onDescriptionChange,
             label = { Text("Reference Biblique") },
             modifier = Modifier
@@ -60,7 +100,7 @@ fun SimpleOutlinedTextFieldSample(
             textStyle = LocalTextStyle.current.copy(fontSize = 16.sp)
         )
         OutlinedTextField(
-            value = itemUiState.itemDetails.content,
+            value = content,
             onValueChange = onContentChange,
             label = { Text("Contenu du Verset") },
             modifier = Modifier
@@ -78,15 +118,12 @@ fun SimpleOutlinedTextFieldSample(
     }
 }
 
+
+
 @Preview(showBackground = true)
 @Composable
 fun SimpleOutlinedTextFieldSamplePreview() {
-    SimpleOutlinedTextFieldSample(
-        itemUiState = ItemUiState(itemDetails = ItemDetails(description = "Example Description", content = "Example Content")),
-        onDescriptionChange = {},
-        onContentChange = {},
-        onSaveClick = {}
-    )
+
 }
 
 
