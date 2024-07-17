@@ -25,6 +25,7 @@ interface ItemsRepository {
     suspend fun updateItem(item: Item)
 
     suspend fun updateLiked(item: Item)
+    fun getItemfindStream(id: Int): Flow<Item?>
 
 
 

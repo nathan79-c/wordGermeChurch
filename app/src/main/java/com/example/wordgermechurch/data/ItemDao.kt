@@ -31,7 +31,10 @@ fun  getLikedVersets():Flow<List<Item>>
 @Query("SELECT * FROM Versets")
 fun getAllVersets():Flow<List<Item>>
 
-    @Query("UPDATE Versets SET liked = liked + 1 WHERE id = :itemId")
-    suspend fun incrementLiked(itemId: Int)
+@Query("UPDATE Versets SET liked = liked + 1 WHERE id = :itemId")
+suspend fun incrementLiked(itemId: Int)
+
+@Query("SELECT * from versets WHERE id = :id")
+fun getItem(id: Int): Flow<Item>
 
 }

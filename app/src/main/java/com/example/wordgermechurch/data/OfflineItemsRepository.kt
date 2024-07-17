@@ -8,6 +8,8 @@ class OfflineItemsRepository (private  val itemDao: ItemDao):ItemsRepository {
     override fun getLikedVersetsStream(): Flow<List<Item>> = itemDao.getLikedVersets()
     override  fun getAlItemStream():Flow<List<Item>> = itemDao.getAllVersets()
 
+    override fun getItemfindStream(id: Int): Flow<Item?> = itemDao.getItem(id)
+
     override suspend fun insertItem(item: Item) = itemDao.insert(item)
 
     override suspend fun deleteItem(item: Item) = itemDao.delete(item)

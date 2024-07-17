@@ -46,6 +46,8 @@ class HommeViewModel(private val itemsRepository: ItemsRepository) : ViewModel()
         val index = random.nextInt(images.size)
         return images[index]
     }
+
+
 }
 
 
